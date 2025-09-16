@@ -1,32 +1,47 @@
 import React from "react";
 import Header from "./Header";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import checkValidate from "../utils/validate.jsx";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    name: "",
-  });
+  const [errorMessage, seterrorMessage] = useState(null);
+  const name = useRef();
+  const email = useRef();
+  const password = useRef();
 
   const toggleSignInForm = () => {
     setIsSignIn(!isSignIn);
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", formData);
+    const message = checkValidate(email.current.value, password.current.value);
+    seterrorMessage(message);
+    if (message) return;
+
+    if (isSignIn) {
+      //sign in  logic
+    } else {
+      //sign up logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          seterrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
   };
 
   return (
@@ -49,10 +64,9 @@ const Login = () => {
         {!isSignIn && (
           <input
             type="text"
+            ref={name}
             name="name"
             placeholder="Full Name"
-            value={formData.name}
-            onChange={handleInputChange}
             className="p-3 rounded-md m-1 my-3 w-full bg-gray-700 text-white placeholder-gray-400"
             required={!isSignIn}
           />
@@ -60,26 +74,25 @@ const Login = () => {
 
         <input
           type="email"
+          ref={email}
           name="email"
           placeholder="Email address"
-          value={formData.email}
-          onChange={handleInputChange}
           className="p-3 rounded-md m-1 my-3 w-full bg-gray-700 text-white placeholder-gray-400"
           required
         />
 
         <input
           type="password"
+          ref={password}
           name="password"
           placeholder="Password"
-          value={formData.password}
-          onChange={handleInputChange}
           className="p-3 rounded-md m-1 my-3 bg-gray-700 w-full text-white placeholder-gray-400"
           required
         />
-
+        <p className="p-2 text-red-700">{errorMessage}</p>
         <button
           type="submit"
+          onClick={handleSubmit}
           className="p-3 rounded-md m-2 my-4 bg-red-700 w-full hover:bg-red-800 transition-colors"
         >
           {isSignIn ? "Sign In" : "Sign Up"}

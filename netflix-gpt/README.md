@@ -1,5 +1,13 @@
 # React + Vite
 
+Login and sign up page
+routing of app
+form validation
+useRef Hook
+firebase setup
+deploying App to Production
+create sign up user account
+
 🚀 Features
 🔐 Authentication
 
