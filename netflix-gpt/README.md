@@ -7,6 +7,11 @@ useRef Hook
 firebase setup
 deploying App to Production
 create sign up user account
+create sign in user with firebase
+create user redux store
+implemented sign out
+get movies from TMDB API
+create new slice for movies
 
 🚀 Features
 🔐 Authentication
