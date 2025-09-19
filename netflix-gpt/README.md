@@ -12,6 +12,7 @@ create user redux store
 implemented sign out
 get movies from TMDB API
 create new slice for movies
+craeted custom hooks
 
 🚀 Features
 🔐 Authentication
